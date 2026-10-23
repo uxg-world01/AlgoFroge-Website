@@ -414,30 +414,6 @@ Options
 
 ## Step 8
 
-Select your minimum Risk : Reward.
-
-Example
-
-```
-1 : 2.5
-```
-
-Available
-
-```
-1:2
-1:2.5
-1:3
-1:3.5
-1:4
-1:4.5
-1:5
-```
-
----
-
-## Step 9
-
 Configure Risk Management.
 
 Example
@@ -456,7 +432,7 @@ Maximum Trades Per Day
 
 ---
 
-## Step 10
+## Step 9
 
 (Optional)
 
@@ -474,7 +450,7 @@ Use EMA Trend Filter
 
 ---
 
-## Step 11
+## Step 10
 
 Click
 

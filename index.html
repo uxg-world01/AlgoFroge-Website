@@ -244,26 +244,6 @@
   }
   .pattern-check span { font-size: 11px; font-weight: 500; }
 
-  /* RR Slider */
-  .rr-display {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 8px;
-  }
-  .rr-val {
-    font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--accent);
-  }
-  input[type=range] {
-    width: 100%; -webkit-appearance: none; background: var(--border);
-    height: 4px; border-radius: 2px; outline: none; padding: 0; border: none;
-    box-shadow: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 18px; height: 18px; border-radius: 50%;
-    background: var(--accent); cursor: pointer;
-    box-shadow: 0 0 10px rgba(0,229,160,.4);
-  }
-
   /* SL Toggle */
   .toggle-group { display: flex; gap: 8px; }
   .toggle-btn {
@@ -555,12 +535,11 @@
 <div class="hero">
   <div class="hero-tag">⚡ Candlestick Price Action Engine</div>
   <h1>Generate Trading<br/><span class="hl">Algo Scripts</span> Instantly</h1>
-  <p>Select your language, patterns, and market. AI builds a complete script with Support/Resistance detection, SL placement, and 1:2.5 R:R logic — ready to deploy.</p>
+  <p>Select your language, patterns, and market. AI builds a complete script with Support/Resistance detection and configurable SL placement — ready to deploy.</p>
   <div class="hero-stats">
     <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Languages</div></div>
     <div class="stat"><div class="stat-val">20+</div><div class="stat-lbl">Patterns</div></div>
     <div class="stat"><div class="stat-val">15+</div><div class="stat-lbl">Brokers</div></div>
-    <div class="stat"><div class="stat-val">1:2.5</div><div class="stat-lbl">Min R:R</div></div>
   </div>
 </div>
 
@@ -669,17 +648,6 @@
           </div>
         </div>
 
-        <div class="form-group" style="margin-bottom:0">
-          <div class="rr-display">
-            <label class="form-label" style="margin:0">Min Risk:Reward Ratio</label>
-            <div class="rr-val">1:<span id="rr-display">2.5</span></div>
-          </div>
-          <input type="range" id="rr-slider" min="2" max="5" step="0.5" value="2.5"
-            oninput="document.getElementById('rr-display').textContent=this.value" />
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px">
-            <span>1:2</span><span>1:3</span><span>1:4</span><span>1:5</span>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -812,7 +780,6 @@ const state = {
   patterns: ['hammer','engulfing','doji'],
   srMethod: 'swing',
   slMode: 'candle_low',
-  rr: 2.5,
   generatedCode: '',
   activeBroker: null,
   connectedBrokers: new Set(),
@@ -968,7 +935,6 @@ async function generateScript() {
   const lookback = document.getElementById('lookback').value || '50';
   const tf = document.getElementById('timeframe').value;
   const sl = state.slMode;
-  const rr = document.getElementById('rr-slider').value;
   const riskPct = document.getElementById('risk-pct').value || '1';
   const maxTrades = document.getElementById('max-trades').value || '3';
   const notes = document.getElementById('extra-notes').value;
@@ -987,16 +953,15 @@ STRATEGY LOGIC:
    - Bearish pattern near Resistance → SELL
 5. Stop Loss: ${sl === 'candle_low' ? 'Place SL below signal candle low (for buys) or above candle high (for sells)' : sl === 'zone_edge' ? 'Place SL at the edge of the S/R zone' : 'Place SL using ATR(14) × 1.5 buffer'}
 6. Take Profit: Next S/R level in direction of trade
-7. Risk:Reward Filter: ONLY enter trade if calculated R:R ≥ 1:${rr} (mandatory filter — skip trade if not met)
-8. Risk per trade: ${riskPct}% of account balance (calculate lot/position size accordingly)
-9. Max trades per day: ${maxTrades}
-${notes ? `10. Extra requirements: ${notes}` : ''}
+7. Risk per trade: ${riskPct}% of account balance (calculate lot/position size accordingly)
+8. Max trades per day: ${maxTrades}
+${notes ? `9. Extra requirements: ${notes}` : ''}
 
 CODE REQUIREMENTS:
 - Complete, runnable script (not a skeleton)
 - Include all imports and dependencies
 - Clear comments explaining each section
-- Functions: detect_patterns(), find_sr_levels(), calculate_rr(), place_order(), risk_management()
+- Functions: detect_patterns(), find_sr_levels(), place_order(), risk_management()
 - For Python: use pandas + numpy for data, with broker-agnostic order placement function
 - For MQL5: use OnTick() structure with proper MetaTrader 5 trade functions
 - For Java: use proper class structure with interfaces
@@ -1044,8 +1009,8 @@ Output ONLY the code. No markdown fences, no explanations — pure code with inl
     codeEl.textContent = code;
     document.getElementById('code-lang-badge').textContent = `${langLabel} · ${data.provider}`;
 
-    buildExplanation(lang, market, symbol, patterns, srMethod, sl, rr, tf);
-    buildBacktestNotes(symbol, tf, rr);
+    buildExplanation(lang, market, symbol, patterns, srMethod, sl, tf);
+    buildBacktestNotes(symbol, tf);
 
     showToast('✅ Script generated via ' + data.provider + '!');
   } catch (err) {
@@ -1059,7 +1024,7 @@ Output ONLY the code. No markdown fences, no explanations — pure code with inl
 }
 
 // ─── EXPLANATION ──────────────────────────────────────────────────────────────
-function buildExplanation(lang, market, symbol, patterns, srMethod, sl, rr, tf) {
+function buildExplanation(lang, market, symbol, patterns, srMethod, sl, tf) {
   const srLabels = {
     swing:'Swing High/Low detection',fractal:'Williams Fractal Points',
     pivot:'Classic Pivot Points',zone:'Supply & Demand Zones',combined:'Multi-method combined'
@@ -1071,7 +1036,7 @@ function buildExplanation(lang, market, symbol, patterns, srMethod, sl, rr, tf) 
   document.getElementById('explanation-body').innerHTML = `
     <div class="exp-section">
       <h3>Strategy Overview</h3>
-      <p>This script implements a pure Price Action trading strategy for <strong>${symbol}</strong> on the <strong>${tf}</strong> timeframe. It identifies high-probability setups where candlestick pattern formations coincide with key support/resistance levels, then filters by minimum R:R to ensure only quality trades are taken.</p>
+      <p>This script implements a pure Price Action trading strategy for <strong>${symbol}</strong> on the <strong>${tf}</strong> timeframe. It identifies high-probability setups where candlestick pattern formations coincide with key support/resistance levels.</p>
     </div>
     <div class="exp-section">
       <h3>Active Patterns</h3>
@@ -1091,8 +1056,7 @@ function buildExplanation(lang, market, symbol, patterns, srMethod, sl, rr, tf) 
       <h3>Stop Loss & Take Profit</h3>
       <p>
         <strong>Stop Loss:</strong> Placed at <em>${slLabels[sl]}</em> — this ensures the SL is logical and accounts for natural market noise.<br/><br/>
-        <strong>Take Profit:</strong> Automatically set at the next significant S/R level in the direction of the trade.<br/><br/>
-        <strong>R:R Filter:</strong> If calculated R:R < 1:${rr}, the trade is SKIPPED entirely. This is the core quality filter.
+        <strong>Take Profit:</strong> Automatically set at the next significant S/R level in the direction of the trade.
       </p>
     </div>
     <div class="strategy-preview">
@@ -1102,20 +1066,18 @@ function buildExplanation(lang, market, symbol, patterns, srMethod, sl, rr, tf) 
       <div class="sp-row"><span class="sp-key">Entry Price</span><span class="sp-val">Market Price</span></div>
       <div class="sp-row"><span class="sp-key">Stop Loss</span><span class="sp-val red">Below Signal Candle</span></div>
       <div class="sp-row"><span class="sp-key">Take Profit</span><span class="sp-val green">Next Resistance</span></div>
-      <div class="sp-row"><span class="sp-key">R:R Check</span><span class="sp-val green">≥ 1:${rr} ✓</span></div>
     </div>
   `;
 }
 
 // ─── BACKTEST NOTES ───────────────────────────────────────────────────────────
-function buildBacktestNotes(symbol, tf, rr) {
+function buildBacktestNotes(symbol, tf) {
   document.getElementById('backtest-body').innerHTML = `
     <p style="font-size:13px;color:var(--muted2);margin-bottom:16px">
-      Estimated performance benchmarks based on price action strategies with 1:${rr} R:R filter on ${symbol} — ${tf}. Run your own backtest to validate.
+      Estimated performance benchmarks based on price action strategies for ${symbol} — ${tf}. Run your own backtest to validate.
     </p>
     <div class="bt-metric-grid">
       <div class="bt-metric"><div class="bt-metric-val pos">42–58%</div><div class="bt-metric-lbl">Est. Win Rate</div></div>
-      <div class="bt-metric"><div class="bt-metric-val neu">1:${rr}</div><div class="bt-metric-lbl">Min R:R</div></div>
       <div class="bt-metric"><div class="bt-metric-val pos">Positive</div><div class="bt-metric-lbl">Expectancy</div></div>
       <div class="bt-metric"><div class="bt-metric-val neg">&lt;15%</div><div class="bt-metric-lbl">Max Drawdown</div></div>
       <div class="bt-metric"><div class="bt-metric-val neu">3–8/wk</div><div class="bt-metric-lbl">Avg Signals</div></div>
@@ -1127,7 +1089,7 @@ function buildBacktestNotes(symbol, tf, rr) {
         <strong>Python:</strong> The generated script includes a <code style="color:var(--accent)">Backtester</code> class. Feed historical OHLCV data (CSV or via broker API) to <code style="color:var(--accent)">run_backtest()</code>.<br/><br/>
         <strong>MQL5:</strong> Use MetaTrader 5 Strategy Tester — set symbol to ${symbol}, timeframe to ${tf}, run "Every tick based on real ticks" for most accuracy.<br/><br/>
         <strong>Java/C/C++:</strong> Compile and run with a historical data CSV. The script's <code style="color:var(--accent)">main()</code> function accepts a data file path argument.<br/><br/>
-        <strong>Key Variables to Optimize:</strong> Lookback period, ATR tolerance for S/R proximity, and minimum R:R threshold.
+        <strong>Key Variables to Optimize:</strong> Lookback period, ATR tolerance for S/R proximity, and stop-loss/take-profit placement.
       </p>
     </div>
     <div class="exp-section">
