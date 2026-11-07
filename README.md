@@ -1,464 +1,150 @@
-# ⚡ AlgoForge
+# AlgoForge
 
-> AI-powered Trading Algorithm Script Generator for **Forex, Crypto, Stocks, Commodities, and Indices**.
+AlgoForge is a browser-based trading strategy generator that turns user inputs into AI-assisted algorithm ideas and script-ready output for multiple markets and programming languages.
 
-AlgoForge is a modern frontend web application that generates trading algorithm prompts based on **Price Action**, **Candlestick Patterns**, **Support & Resistance**, **Risk Management**, and **Risk/Reward** logic.
+The project includes a frontend UI for selecting strategy parameters and a Node.js backend that calls AI providers (DeepSeek and Gemini) to generate trading logic. The app is designed for quick experimentation with market conditions, candlestick setups, risk rules, and executable strategy scripts.
 
----
+## Features
 
-## ✨ Features
+- AI-powered strategy generation
+- Multi-market support for forex, crypto, stocks, commodities, and indices
+- Multiple output languages: Python, MQL5, Java, C, and C++
+- Candlestick pattern selection
+- Support and resistance logic
+- Risk management controls
+- Stop-loss and take-profit configuration
+- Copy and download generated code
+- Responsive modern interface
+- Automatic fallback between DeepSeek and Gemini APIs
 
-- 🎯 Modern Premium UI
-- 🐍 Multiple Programming Languages
-  - Python
-  - MQL5
-  - Java
-  - C
-  - C++
-- 📈 Multi Market Support
-  - Forex
-  - Crypto
-  - Stocks
-  - Commodities
-  - Indices
-- 🕯️ 20+ Candlestick Pattern Selection
-- 📊 Support & Resistance Detection
-  - Swing High/Low
-  - Fractals
-  - Pivot Points
-  - Supply & Demand
-  - Combined Method
-- 🛡️ Risk Management Configuration
-- 📍 Multiple Stop Loss Methods
-- 📉 Configurable Risk Reward Ratio
-- 📋 Copy Generated Script
-- 📥 Download Generated Code
-- 📖 Strategy Explanation
-- 📊 Backtesting Guide
-- 🔗 Broker API Connection Interface
-- 📱 Fully Responsive Design
+## Tech stack
 
----
+- HTML, CSS, and JavaScript frontend
+- Express.js backend
+- Node.js server runtime
+- OpenAI-compatible DeepSeek integration
+- Google Gemini integration
+- dotenv environment configuration
 
-# 📷 Preview
+## Project structure
 
-![AlgoForge Preview](preview.png)
-
----
-
-# 🚀 Supported Languages
-
-| Language | Extension |
-|-----------|-----------|
-| Python | `.py` |
-| MQL5 | `.mq5` |
-| Java | `.java` |
-| C | `.c` |
-| C++ | `.cpp` |
-
----
-
-# 📈 Supported Markets
-
-- Forex
-- Crypto
-- Stocks
-- Commodities
-- Indices
-
----
-
-# 🕯️ Supported Candlestick Patterns
-
-- Hammer
-- Engulfing
-- Doji
-- Pin Bar
-- Shooting Star
-- Morning Star
-- Evening Star
-- Inside Bar
-- Outside Bar
-- Marubozu
-- Harami
-- Tweezer
-
----
-
-# ⚙️ Strategy Logic
-
-The generated trading algorithm follows this workflow:
-
-```
-Price Data
-      │
-      ▼
-Candlestick Pattern Detection
-      │
-      ▼
-Support & Resistance Detection
-      │
-      ▼
-Price Action Confirmation
-      │
-      ▼
-Risk Reward Validation
-      │
-      ▼
-Trade Entry
-      │
-      ▼
-Stop Loss Placement
-      │
-      ▼
-Take Profit
-```
-
----
-
-# 📊 Risk Management
-
-- Configurable Risk %
-- Maximum Trades Per Day
-- Minimum Risk Reward Ratio
-- Dynamic Position Sizing
-- Stop Loss Placement
-- Take Profit Calculation
-
----
-
-# 🏦 Supported Broker Integrations
-
-- MetaTrader 4
-- MetaTrader 5
-- Binance
-- Bybit
-- Interactive Brokers
-- Alpaca
-- OANDA
-- OKX
-- Kraken
-- Deribit
-- cTrader
-- TD Ameritrade
-
----
-
-# 📂 Project Structure
-
-```
-AlgoForge/
-│
+```bash
+HTML_FILES/
 ├── index.html
-├── favicon.png
-├── preview.png
+├── generateScript.mjs
+├── script.js
+├── gemini.js
+├── .env
+├── .env_example
+├── Dockerfile
+├── package.json
 ├── README.md
-└── LICENSE
+├── SECURITY.md
+├── image(13).png
+└── node_modules/
 ```
 
----
+## Prerequisites
 
-# 🚀 Getting Started
+- Node.js 18+
+- npm
+- At least one AI API key from either DeepSeek or Gemini
 
-Simply clone the repository.
+## Installation
+
+1. Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/AlgoForge.git
+git clone <your-repo-url>
+cd HTML_FILES
 ```
 
-Open the project.
+2. Install dependencies:
 
 ```bash
-cd AlgoForge
+npm install
 ```
 
-Run using any local server.
-
-Python
+3. Create your environment file:
 
 ```bash
-python -m http.server 8000
+cp .env_example .env
 ```
 
-Node.js
+4. Add your API keys in `.env`:
+
+```env
+# DeepSeek
+DEEPSEEK_API_KEY_1=your_key_here
+DEEPSEEK_API_KEY_2=
+DEEPSEEK_API_KEY_3=
+
+# Gemini
+GEMINI_API_KEY_1=your_key_here
+GEMINI_API_KEY_2=
+GEMINI_API_KEY_3=
+
+PORT=3000
+```
+
+## Running the app
+
+Start the server:
 
 ```bash
-npx serve
+npm start
 ```
 
-VS Code
+The app will run on the configured port, defaulting to `3000` unless you override it in `.env`.
 
-Install **Live Server** extension and click **Go Live**.
+Then open:
 
----
-
-# 🎨 Built With
-
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Google Fonts
-- Modern Glassmorphism UI
-
----
-
-# 📌 Future Roadmap
-
-- AI Code Generation API
-- Pine Script Support
-- NinjaTrader Support
-- TradingView Integration
-- Strategy Optimizer
-- Walk Forward Testing
-- Portfolio Management
-- Cloud Sync
-- User Authentication
-- Dark/Light Theme
-
----
-# 📖 How to Use
-
-Follow these simple steps to generate your trading algorithm.
-
----
-
-## Step 1 — Download the Project
-
-Clone the repository.
-
-```bash
-git clone https://github.com/YOUR_USERNAME/AlgoForge.git
+```text
+http://localhost:3000
 ```
 
-Or click **Code → Download ZIP** on GitHub.
+## How it works
 
----
+- The frontend collects strategy inputs such as market, language, risk profile, and pattern preferences.
+- The browser sends a prompt to the backend API.
+- The backend tries DeepSeek first.
+- If DeepSeek fails, it falls back to Gemini.
+- The returned response is displayed in the app and can be copied or downloaded.
 
-## Step 2 — Open the Project
+## API endpoint
 
-Open the project folder.
+The backend exposes:
 
-```
-AlgoForge/
-│
-├── index.html
-├── favicon.png
-└── README.md
-```
-
----
-
-## Step 3 — Run the Website
-
-You can run the project in several ways.
-
-### Option 1 (Recommended)
-
-Install the **Live Server** extension in VS Code.
-
-Right-click on **index.html**
-
-Select
-
-```
-Open with Live Server
+```http
+POST /api/generate
 ```
 
----
+Example request body:
 
-### Option 2
-
-Python users
-
-```bash
-python -m http.server 8000
+```json
+{
+  "prompt": "Generate a Python breakout strategy for BTCUSD with risk management and entry rules."
+}
 ```
 
-Open
+Example response:
 
-```
-http://localhost:8000
-```
-
----
-
-### Option 3
-
-Node.js users
-
-```bash
-npx serve
+```json
+{
+  "provider": "DeepSeek",
+  "response": "...generated trading strategy..."
+}
 ```
 
----
+## Notes
 
-# 🚀 Generate Your Trading Script
+- The app is intended for strategy generation and educational use.
+- AI-generated trading ideas should be reviewed carefully before live use.
+- API keys are loaded from `.env` and should not be committed to source control.
 
----
+## License
 
-## Step 1
-
-Choose your programming language.
-
-Examples
-
-- Python
-- MQL5
-- Java
-- C
-- C++
-
----
-
-## Step 2
-
-Choose your market.
-
-Examples
-
-- Forex
-- Crypto
-- Stocks
-- Commodities
-- Indices
-
----
-
-## Step 3
-
-Enter your trading symbol.
-
-Example
-
-```
-XAUUSD
-```
-
-or
-
-```
-BTCUSDT
-```
-
-or
-
-```
-EURUSD
-```
-
----
-
-## Step 4
-
-Select one or more candlestick patterns.
-
-Examples
-
-- Hammer
-- Engulfing
-- Doji
-- Pin Bar
-- Morning Star
-- Shooting Star
-- Harami
-- Tweezer
-
----
-
-## Step 5
-
-Choose Support & Resistance detection.
-
-Options
-
-- Swing High / Low
-- Fractals
-- Pivot Points
-- Supply & Demand
-- Combined
-
----
-
-## Step 6
-
-Choose the timeframe.
-
-Example
-
-```
-M15
-```
-
-Other options
-
-- M1
-- M5
-- M30
-- H1
-- H4
-- D1
-
----
-
-## Step 7
-
-Choose Stop Loss method.
-
-Options
-
-- Candle Low / High
-- Zone Edge
-- ATR Buffer
-
----
-
-## Step 8
-
-Configure Risk Management.
-
-Example
-
-Risk Per Trade
-
-```
-1%
-```
-
-Maximum Trades Per Day
-
-```
-3
-```
-
----
-
-## Step 9
-
-(Optional)
-
-Add additional instructions.
-
-Example
-
-```
-Trade only London Session
-
-Avoid High Impact News
-
-Use EMA Trend Filter
-```
-
----
-
-## Step 10
-
-Click
-
-```
-⚡ Generate Script
-```
-
-The AI will generate a complete trading algorithm.
+This project is licensed under the ISC license unless otherwise specified.
 
 ---
 
